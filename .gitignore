@@ -1,3 +1,9 @@
+# private data and scripts
+private/
+
+# macOS
+.DS_Store
+
 # History files
 .Rhistory
 .Rapp.history
