@@ -16,50 +16,6 @@ library(gridExtra)
 pre_periods = c(1:3)
 post_periods = c(9, 10)
 
-
-# ARGUMENT EXPLANATIONS --------------------------------------------------------
-
-# preprocess_temp (bool):
-#   - If TRUE: Calculates temperature index (temp_index) as deviation from Taipei's mean temperature (23.3°C)
-#   - If FALSE: Uses raw temperature mean (temp_mean) values
-
-# single_pre_usage (bool):
-#   - If TRUE: Includes individual log electricity usage for each pre-treatment period as covariates
-#              e.g. Adds log_daily_usage_1, log_daily_usage_2, log_daily_usage_3 as separate variables
-#   - If FALSE: Only uses average log electricity usage across pre-treatment periods
-
-# imputation (bool):
-#   - If TRUE: Uses Random Forest-based imputation via missRanger package
-#             Handles missing values by modeling relationships between variables
-#   - If FALSE: Uses simple imputation methods
-#             Categorical variables: Missing values -> "missing" category
-#             Numeric variables: Missing values -> variable mean
-
-# interaction (bool):
-#   - If TRUE: Creates meaningful interaction terms between covariates
-#             Particularly beneficial for linear models
-#             Note: Requires preprocess_temp = TRUE for temperature-related interactions
-#   - If FALSE: No interaction terms created
-
-# factor_to_one_hot (bool):
-#   - If TRUE: Converts categorical (factor) variables to one-hot encoded binary variables
-#             Essential for matrix-based algorithms: GRF, XGBoost etc.
-#   - If FALSE: Keeps categorical variables as factors
-#             Suitable for tree-based models that handle factors natively (randomForest, gbm)
-
-# log_transformation (bool):
-#   - If TRUE: Apply log transformation to usage variables
-#   - If FALSE: Use raw usage values without log transformation
-#             Useful for calculating total electricity savings in original units
-
-# outcome_normalization (bool):
-#   - If TRUE: Computes normalized outcome as difference in log usage
-#             Follows Murakami et al. (2022) methodology for treatment effect estimation
-#             Works with `outcome_normalization` to create log-scale outcomes:
-#               When combined with `log_transformation=TRUE`: outcome = log(post_usage) - log(pre_usage_avg)
-#               When combined with `log_transformation=FALSE`: outcome = post_usage - pre_usage_avg
-#   - If FALSE: Uses simple log-transformed post-treatment usage
-
 get_datasets = function(pre_periods,
                         post_periods,
                         preprocess_temp = FALSE,
