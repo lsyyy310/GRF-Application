@@ -1,10 +1,11 @@
 # Generalized Random Forest (GRF) Analysis for HTEs
 
-**Note**: This analysis uses proprietary experimental data from ongoing research and requires access to private preprocessing functions. The data files and preprocessing scripts are not included in this public repository for confidentiality reasons.
-
 ## Overview
 
 This repository implements Generalized Random Forest (GRF) methods to estimate heterogeneous treatment effects (HTEs) in an experimental setting. The analysis focuses on identifying conditional average treatment effects (CATE) and local average treatment effects (CLATE) using machine learning-based causal inference methods.
+
+**Note**: This analysis uses proprietary experimental data from ongoing research and requires access to private preprocessing functions. The data files and preprocessing scripts are not included in this public repository for confidentiality reasons.
+
 
 ## Repository Structure
 
