@@ -36,7 +36,7 @@ The analysis implements multiple treatment comparison frameworks:
 
 The codebase includes baseline machine learning methods for comparison:
 - **Gradient Boosting Machine (GBM)**: Using `gbm` package
-- **XGBoost**: For high-performance gradient boosting
+- **XGBoost**: For high-performance gradient boosting using `xgboost` package
 - **Generalized Random Forest**: Baseline regression forest using `grf` package
 
 ## Core Functions
