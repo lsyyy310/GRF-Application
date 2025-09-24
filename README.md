@@ -39,21 +39,21 @@ The codebase includes baseline machine learning methods for comparison:
 - **XGBoost**: For high-performance gradient boosting using `xgboost` package
 - **Generalized Random Forest**: Baseline regression forest using `grf` package
 
-## Core Functions
+## Core Functions (`GRF_func.R`)
 
-### Main Analysis (`GRF_func.R`)
+### Main Analysis
 
 - `run_GRF()`: Primary function for running GRF analysis across multiple time periods
 - `analyze_feature_importance()`: Calculate variable importance using split frequencies
 - `find_important_vars()`: Identify important variables across different models
 
-### Policy Analysis (`GRF_func.R`)
+### Policy Analysis
 
 - `targeting_analysis()`: Implement targeting policies for treatment assignment
 - `analyze_tree_leaves()`: Analyze decision rules from policy trees
 - `plot_policy_tree()`: Visualize learned treatment assignment policies
 
-### Visualization (`GRF_func.R`)
+### Visualization
 
 - `plot_coef()`: Create coefficient plots with confidence intervals
 - `plot_feature_importance()`: Visualize variable importance rankings
