@@ -18,6 +18,7 @@ post_periods = c(9, 10)
 
 get_datasets = function(pre_periods,
                         post_periods,
+                        temp_type = 1,
                         preprocess_temp = FALSE,
                         single_pre_usage = FALSE,
                         imputation = FALSE,
@@ -28,6 +29,7 @@ get_datasets = function(pre_periods,
   preprocess_results = preprocess(
     pre_periods = pre_periods,
     post_periods = post_periods,
+    temp_type = temp_type,
     preprocess_temp = preprocess_temp,
     single_pre_usage = single_pre_usage,
     imputation = imputation,
@@ -73,6 +75,7 @@ get_datasets = function(pre_periods,
 preprocess_results = get_datasets(
   pre_periods = pre_periods,
   post_periods = post_periods,
+  temp_type = 4,
   preprocess_temp = FALSE,
   single_pre_usage = FALSE,
   imputation = FALSE,
