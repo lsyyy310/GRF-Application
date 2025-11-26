@@ -1,3 +1,4 @@
+source("./private/data_preprocessing.R")
 library(dplyr)
 library(tidyr)
 library(gbm)
@@ -10,6 +11,63 @@ library(ggplot2)
 
 
 # FUNCTIONS --------------------------------------------------------------------
+
+## PREPROCESSING ---------------------------------------------------------------
+get_datasets = function(pre_periods,
+                        post_periods,
+                        temp_type = 1,
+                        preprocess_temp = FALSE,
+                        single_pre_usage = FALSE,
+                        imputation = FALSE,
+                        interaction = FALSE,
+                        factor_to_one_hot = TRUE,
+                        log_transformation = TRUE,
+                        outcome_normalization = TRUE) {
+  preprocess_results = preprocess(
+    pre_periods = pre_periods,
+    post_periods = post_periods,
+    temp_type = temp_type,
+    preprocess_temp = preprocess_temp,
+    single_pre_usage = single_pre_usage,
+    imputation = imputation,
+    interaction = interaction,
+    factor_to_one_hot = factor_to_one_hot,
+    log_transformation = log_transformation,
+    outcome_normalization = outcome_normalization
+  )
+  
+  post_period_cols = preprocess_results$post_period_cols
+  
+  datasets = list()
+  
+  # T1 treatment dataset (T1 vs. Control)
+  datasets$T1 = preprocess_results$data %>%
+    filter(Treatment == "C" | Treatment == "T1") %>%
+    mutate(
+      Treatment = dplyr::recode(Treatment, "C" = 0, "T1" = 1),
+      across(everything(), as.numeric)
+    )
+  
+  # LATE takers dataset (T2 vs. Control)
+  datasets$T2y = preprocess_results$data %>%
+    filter(Treatment == "C" | Treatment == "T2") %>%
+    mutate(
+      Treatment = dplyr::recode(Treatment, "C" = 0, "T2" = 1),
+      across(everything(), as.numeric)
+    )
+  
+  # LATE non-takers dataset (T2 vs. T1)
+  datasets$T2n = preprocess_results$data %>%
+    filter(Treatment == "T1" | Treatment == "T2") %>%
+    mutate(
+      Treatment = dplyr::recode(Treatment, "T1" = 0, "T2" = 1),
+      across(everything(), as.numeric)
+    )
+  
+  # rm(preprocess_results, create_interaction_terms, predict_similar_households, preprocess)
+  return(list(datasets = datasets, post_period_cols = preprocess_results$post_period_cols))
+}
+
 ## BASELINE MACHINE LEARNING ---------------------------------------------------
 fit_gbm = function(X_train, Y_train, X_test) {
   data_train = X_train %>%
@@ -575,7 +633,8 @@ analyze_tree_leaves = function(data,
 # create coefficient plot with CIs
 plot_coef = function(treatment_results,
                      title = "Treatment Effects with Confidence Intervals (GRF)",
-                     phase_label = "Phase 2") {
+                     phase_label = "Phase 2",
+                     caption = NULL) {
   
   plot_data = treatment_results %>%
     mutate(
@@ -586,6 +645,8 @@ plot_coef = function(treatment_results,
       ci_99_lower = mu - 2.576 * se,
       ci_99_upper = mu + 2.576 * se
     )
+  
+  title_size = ifelse(nchar(title) > 50, 10, 12)
   
   plot = ggplot(plot_data, aes(x = treatment_type, y = mu)) +
     geom_errorbar(aes(ymin = ci_99_lower, ymax = ci_99_upper),
@@ -598,10 +659,14 @@ plot_coef = function(treatment_results,
     geom_hline(yintercept = 0, linetype = "dashed", color = "red", linewidth = .8) +
     # ylim(-0.2, 0.2) +
     theme_minimal() +
-    theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
+    theme(
+      axis.text.x = element_text(angle = 30, hjust = 1),
+      plot.title = element_text(size = title_size, hjust = 0.5)
+    ) +
     labs(title = title,
          x = phase_label,
-         y = "Coefficient")
+         y = "Coefficient",
+         caption = caption)
   return(plot)
 }
 

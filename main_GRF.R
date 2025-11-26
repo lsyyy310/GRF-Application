@@ -1,5 +1,4 @@
 # rm(list = ls(all = T))
-source("./private/data_preprocessing.R")
 source("GRF_func.R")
 library(dplyr)
 library(tidyr)
@@ -15,62 +14,6 @@ library(gridExtra)
 # DATA PREPARATION -------------------------------------------------------------
 pre_periods = c(1:3)
 post_periods = c(9, 10)
-
-get_datasets = function(pre_periods,
-                        post_periods,
-                        temp_type = 1,
-                        preprocess_temp = FALSE,
-                        single_pre_usage = FALSE,
-                        imputation = FALSE,
-                        interaction = FALSE,
-                        factor_to_one_hot = TRUE,
-                        log_transformation = TRUE,
-                        outcome_normalization = TRUE) {
-  preprocess_results = preprocess(
-    pre_periods = pre_periods,
-    post_periods = post_periods,
-    temp_type = temp_type,
-    preprocess_temp = preprocess_temp,
-    single_pre_usage = single_pre_usage,
-    imputation = imputation,
-    interaction = interaction,
-    factor_to_one_hot = factor_to_one_hot,
-    log_transformation = log_transformation,
-    outcome_normalization = outcome_normalization
-  )
-  
-  post_period_cols = preprocess_results$post_period_cols
-  
-  datasets = list()
-
-  # T1 treatment dataset (T1 vs. Control)
-  datasets$T1 = preprocess_results$data %>%
-    filter(Treatment == "C" | Treatment == "T1") %>%
-    mutate(
-      Treatment = dplyr::recode(Treatment, "C" = 0, "T1" = 1),
-      across(everything(), as.numeric)
-    )
-  
-  # LATE takers dataset (T2 vs. Control)
-  datasets$T2y = preprocess_results$data %>%
-    filter(Treatment == "C" | Treatment == "T2") %>%
-    mutate(
-      Treatment = dplyr::recode(Treatment, "C" = 0, "T2" = 1),
-      across(everything(), as.numeric)
-    )
-  
-  # LATE non-takers dataset (T2 vs. T1)
-  datasets$T2n = preprocess_results$data %>%
-    filter(Treatment == "T1" | Treatment == "T2") %>%
-    mutate(
-      Treatment = dplyr::recode(Treatment, "T1" = 0, "T2" = 1),
-      across(everything(), as.numeric)
-    )
-  
-  # rm(preprocess_results, create_interaction_terms, predict_similar_households, preprocess)
-  return(list(datasets = datasets, post_period_cols = preprocess_results$post_period_cols))
-}
-
 
 preprocess_results = get_datasets(
   pre_periods = pre_periods,
